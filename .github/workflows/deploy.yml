@@ -23,9 +23,9 @@ jobs:
       - name: Deploy index.html to EC2
         run: |
           # Copy index.html to EC2
-          scp index.html ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/tmp/index.html
+          sudo scp index.html ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/tmp/index.html
 
-          
+
           # Move file into Nginx web root and restart Nginx
           ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             sudo mv /tmp/index.html /usr/share/nginx/html/index.html
