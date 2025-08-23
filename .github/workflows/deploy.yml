@@ -1,5 +1,5 @@
 
-name: Deploy Static Site to EC2
+name: Deploy Static Site to EC2 instance
 
 on:
   push:
