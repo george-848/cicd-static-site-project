@@ -1,10 +1,9 @@
-
-name: Deploy Static Site to EC2 instance
+name: CI/CD Deploy to EC2 (Nginx)
 
 on:
   push:
     branches:
-      - main  # Trigger when pushing to main
+      - main   # Trigger deployment when pushing to main branch
 
 jobs:
   deploy:
@@ -12,16 +11,23 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Set up SSH
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to EC2
+      - name: Deploy index.html to EC2
         run: |
+          # Copy index.html to EC2
           scp index.html ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/tmp/index.html
-          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo mv /tmp/index.html /usr/share/nginx/html/index.html && sudo systemctl restart nginx"
+          
+          # Move file into Nginx web root and restart Nginx
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            sudo mv /tmp/index.html /usr/share/nginx/html/index.html
+            sudo chown www-data:www-data /var/www/html/index.html
+            sudo systemctl restart nginx
+          EOF
