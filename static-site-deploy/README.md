@@ -1,1 +1,0 @@
-# cicd-static-site-project
