@@ -27,7 +27,6 @@ jobs:
 
           # Move file into Nginx web root and restart Nginx
           ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            sudo mv /tmp/index.html /var/www/html/index.html
-            sudo chown www-data:www-data /var/www/html/index.html
+            sudo mv /tmp/index.html /usr/share/nginx/html/index.html
             sudo systemctl restart nginx
           EOF
