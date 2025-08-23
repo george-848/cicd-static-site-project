@@ -1,32 +1,45 @@
-name: CI/CD Deploy to EC2 (Nginx)
+name: Deploy Static Site via Docker
 
 on:
   push:
     branches:
-      - main   # Trigger deployment when pushing to main branch
+      - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Setup SSH
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: |
+          IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/george
+          docker build -t $IMAGE_NAME:latest .
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/george
+          docker push $IMAGE_NAME:v1
+
+      - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy index.html to EC2
+      - name: Deploy on EC2
         run: |
-          # Copy index.html to EC2
-          scp index.html ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/tmp/index.html
-
-          # Move file into Nginx web root and restart Nginx
-          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            sudo mv /tmp/index.html /var/www/html/index.html
-            sudo systemctl restart nginx
-          EOF
+          IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/george
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
+            docker pull $IMAGE_NAME:v1 &&
+            docker stop static-container || true &&
+            docker rm static-container || true &&
+            docker run -d --name static-container -p 80:80 $IMAGE_NAME:v1
+          "
