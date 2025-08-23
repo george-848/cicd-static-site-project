@@ -25,7 +25,7 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: |
           IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/static-site
-          docker push $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:v1.0
 
       - name: Set up SSH
         run: |
@@ -41,5 +41,5 @@ jobs:
             docker pull $IMAGE_NAME:latest &&
             docker stop static-container || true &&
             docker rm static-container || true &&
-            docker run -d -t -p 8080:80 $IMAGE_NAME:latest
+            docker run --rm -d -t --name static-container -p 8080:80 $IMAGE_NAME:latest
           "
