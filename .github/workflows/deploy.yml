@@ -39,7 +39,7 @@ jobs:
           IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/static-site
           ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
             docker pull $IMAGE_NAME:latest &&
-            docker stop static-container || true &&
-            docker rm static-container || true &&
+            docker stop $IMAGE_NAME || true &&
+            docker rm $IMAGE_NAME || true &&
             docker run -d -t -p 80:80 $IMAGE_NAME:latest
           "
