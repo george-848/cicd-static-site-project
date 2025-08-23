@@ -1,4 +1,4 @@
-name: Deploy Static Site via Docker
+name: Deploy Static Site via Docker Container
 
 on:
   push:
@@ -41,5 +41,5 @@ jobs:
             docker pull $IMAGE_NAME:latest &&
             docker stop static-container || true &&
             docker rm static-container || true &&
-            docker run -d --name static-container -p 80:80 $IMAGE_NAME:latest
+            docker run -d -t -p 80:80 $IMAGE_NAME:latest
           "
