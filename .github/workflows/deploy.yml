@@ -1,4 +1,4 @@
-name: Deploy Static Site via Docker Container
+name: Deploy Static Site via Docker
 
 on:
   push:
