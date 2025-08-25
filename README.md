@@ -23,7 +23,7 @@ Cloud Hosting: AWS EC2 (Ubuntu 22.04)
 Web Server: Nginx
 
 ## Project Structure & Architechture
-
+![arch](arch.png)
 
 ## CI/CD Workflow
 
@@ -59,7 +59,7 @@ Nginx serves the updated website
 
 ## Demo
 
-👉 [Insert screenshot of your website running on EC2]
+![demo](demo.png)
 👉 [Insert link to live site if accessible]
 
 ## Future Improvements
