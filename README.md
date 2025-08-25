@@ -60,7 +60,8 @@ Nginx serves the updated website
 ## Demo
 
 ![demo](demo.png)
-👉 [Insert link to live site if accessible]
+
+👉 Linkdin Link: https://www.linkedin.com/posts/george-arthur-467151295_build-an-automated-cicd-deployment-activity-7365123264873951232-0iiI?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEdj-k8BuuVlzbSzAuXFJ3V4qjJ5ijI51mI
 
 ## Future Improvements
 
